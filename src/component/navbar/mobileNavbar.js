@@ -1,20 +1,19 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom';
 export default function Mobile() {
     return (
         <div className={` bg-white w-full `}>
             <ul className={`   flex flex-col   divide-y divide-blue-200`}>
-                <li className='text-black m-2 '><a href='/series'>SERIES</a></li>
-                <li className='text-black m-2 '><a href='/movies'>MOVIES</a></li>
-                <li className='text-black m-2 '><a href='/new&last'>NEW&LAST CHANCE</a></li>
-                <li className='text-black m-2 '><a href='/schedule'>SCHEDULE</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>FREE EPISODES</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>MORE</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>DOCMENTARIES</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>SPECIALS</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>SPORTS</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>PODCATS</a></li>
-                <li className='text-black m-2 '><a href='/comingsoon'>MAX</a></li>
+                <li className="text-black m-2"><Link to="/series">SERIES</Link></li>
+                <li className="text-black m-2"><Link to="/movies">MOVIES</Link></li>
+                <li className="text-black m-2"><Link to="/new&last">NEW&LAST CHANCE</Link></li>
+                <li className="text-black m-2"><Link to="/schedule">SCHEDULE</Link></li>
+                <li className="text-black m-2"><Link to="/comingsoon">FREE EPISODES</Link></li>
+                <li className='text-black m-2 '><Link to="/comingsoon">DOCMENTARIES</Link></li>
+                <li className='text-black m-2 '><Link to="/comingsoon">SPECIALS</Link></li>
+                <li className='text-black m-2 '><Link to="/comingsoon">SPORTS</Link></li>
+                <li className='text-black m-2 '><Link to="/comingsoon">PODCATS</Link></li>
+                <li className='text-black m-2 '><Link to="/comingsoon">MAX</Link></li>
             </ul>
         </div>
     )

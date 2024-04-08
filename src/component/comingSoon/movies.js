@@ -75,7 +75,7 @@ const Movies = () => {
                                     <div className='rounded-md p-3'>
                                         <img className='h-[380px] w-[300px] rounded-lg shadow-lg object-cover' src={`${process.env.REACT_APP_API_URL}/${movie.posterUrl}`} alt='' />
                                     </div>
-                                    <h1 className='p-3 text-white bg-gray-800'>{movie.title}</h1>
+
                                 </Link>
                             </li>
                         ))}

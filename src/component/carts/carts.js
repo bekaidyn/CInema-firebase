@@ -11,16 +11,21 @@ const MovieCards = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
-    console.log(process.env.REACT_APP_API_URL)
+
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/api/v1/movies`)
             .then((res) => {
-                setMovies(res.data);
+                // Assuming movies have a 'popularity' field, you can sort and filter them here
+                const sortedMovies = res.data.sort((a, b) => {
+                    return sortOrder === 'asc' ? a.popularity - b.popularity : b.popularity - a.popularity;
+                }).slice(0, 10); // Get the top 20 movies based on popularity
+
+                setMovies(sortedMovies);
             })
             .catch(err => {
                 console.error('Error fetching movies:', err);
             });
-    }, []);
+    }, [sortOrder]); // Include sortOrder in the dependency array to re-fetch movies when the sort order changes
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
@@ -31,18 +36,9 @@ const MovieCards = () => {
         // Toggle the sorting order
         const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
         setSortOrder(newSortOrder);
-
-        // Sort the movies based on the selected order
-        const sortedMovies = [...movies].sort((a, b) => {
-            const checkA = typeof a.title === 'string' ? a.title.toLowerCase() : String(a.title);
-            const checkB = typeof b.title === 'string' ? b.title.toLowerCase() : String(b.title);
-            return newSortOrder === 'asc' ? checkA.localeCompare(checkB) : checkB.localeCompare(checkA);
-        });
-
-        setMovies(sortedMovies);
-        setCurrentPage(1); // Reset currentPage to 1 after sorting
     };
 
+    // Filtered movies based on search term
     const filteredData = movies.filter((data) => {
         return data.title.toLowerCase().includes(searchTerm.toLowerCase());
     });
@@ -59,7 +55,7 @@ const MovieCards = () => {
         <div className=' lg:mx-[7%]'>
             <div className='  relative'>
                 <div className='text-center'>
-                    <h1 className='text-center m-8 text-5xl'>MGL top 20 Movies</h1>
+                    <h1 className='text-center m-8 text-5xl'>KAZ top 10 Movies</h1>
                 </div>
                 <div className='  box-border  border-2 w-auto divide-y divide-gray-200'>
                     <div className='mr-10 flex my-2'>
@@ -77,15 +73,10 @@ const MovieCards = () => {
                                     <div className=' rounded-md p-3'>
                                         <img className='h-[380px] w-[300px] rounded-lg shadow-lg object-cover' src={`${process.env.REACT_APP_API_URL}/${movie.posterUrl}`} alt='' />
                                     </div>
-                                    <h1 className='p-3'>{movie.title}</h1>
-                                    <h1 className='p-3'>{movie.runtime} min</h1>
-                                    <h1 className='p-3'>{movie.plot}</h1>
-                                    <button className='p-3 hover:text-w-blue-300 ml-3 text-[#2bb0d8]'>Find out &gt;</button>
                                 </Link>
                             </li>
                         ))}
                     </ul>
-
                 </div>
             </div>
             <div className='border-2'>

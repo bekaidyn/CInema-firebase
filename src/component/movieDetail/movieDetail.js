@@ -92,7 +92,7 @@ const MovieDetails = () => {
                 });
 
 
-                console.log('Comment posted successfully:');
+                console.log('Comment posted successfully:', response.data);
 
                 // Update the commentsList state with the new comment
                 setCommentsList([...commentsList, { user, comment }]);
@@ -173,7 +173,7 @@ const MovieDetails = () => {
                                                 <span className="font-semibold">Genre:</span> {movie.genre}
                                             </p>
                                             <p>
-                                                <span className="font-semibold">Rated:</span> {movie.rated}
+                                                <span className="font-semibold">Rating:</span> {movie.rated}
                                             </p>
                                         </div>
                                         <div>

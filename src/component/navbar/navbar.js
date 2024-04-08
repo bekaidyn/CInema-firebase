@@ -48,13 +48,13 @@ const Navbar = (userDetails) => {
             <div>
                 <div className='hidden lg1:block m-0 '>
                     <nav className={`container flex `}>
-                        <div className='flex-none m-2 p-0'>
+                        <div className='flex-none my-2 p-0'>
                             <a href='/'>
                                 <img className='h-10' src={Logo} alt='Logo' />
                             </a>
                         </div>
-                        <div className='flex-1 w-64 m-1.5 pl-0'>
-                            <ul className="font-extralight text-md flex items-center gap-[1vw] m-3">
+                        <div className='flex-1 w-64 my-1.5  pl-0 '>
+                            <ul className="font-extralight text-md flex items-center gap-[1vw]  my-3">
                                 <li className="text-black"><Link to="/series">SERIES</Link></li>
                                 <li className="text-black"><Link to="/movies">MOVIES</Link></li>
                                 <li className="text-black"><Link to="/new&last">NEW&LAST CHANCE</Link></li>

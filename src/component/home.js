@@ -16,7 +16,7 @@ export default function Home() {
             {loading ? (
                 <Spinner />
             ) : (
-                <div className='Test'>
+                <div className=''>
                     <Background />
                     <MovieCards />
                 </div>
