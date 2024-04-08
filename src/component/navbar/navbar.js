@@ -1,6 +1,6 @@
 // Import the necessary dependencies
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Logo from '../images/movies1.png';
 import Button from '../button/button';
@@ -21,19 +21,12 @@ const Navbar = (userDetails) => {
             .catch((err) => { console.log(err) })
     }, [])
 
-    const user = userDetails.user;
+
 
 
     const isAuth = () => {
-        if (!user || !user.email) {
-            return false; // User is empty or email is not available
-        } else if (auth.includes(user.email)) {
-            return true; // User's email is in the auth array
-        } else {
-            return false; // User is not authenticated
-        }
-    }
-
+        return userDetails && userDetails.user && auth && auth.includes(userDetails.user.email);
+    };
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => {
@@ -61,14 +54,14 @@ const Navbar = (userDetails) => {
                             </a>
                         </div>
                         <div className='flex-1 w-64 m-1.5 pl-0'>
-                            <ul className='font-extralight text-md flex items-center gap-[1vw] m-3'>
-                                <li className='text-black'><a href='/series'>SERIES</a></li>
-                                <li className='text-black'><a href='/movies'>MOVIES</a></li>
-                                <li className='text-black'><a href='/new&last'>NEW&LAST CHANCE</a></li>
-                                <li className='text-black'><a href='/schedule'>SCHEDULE</a></li >
-                                <li className='text-black'><a href='/comingsoon'>FREE EPISODES</a></li >
-                                <li className='text-black'><Drop /></li >
-                            </ul >
+                            <ul className="font-extralight text-md flex items-center gap-[1vw] m-3">
+                                <li className="text-black"><Link to="/series">SERIES</Link></li>
+                                <li className="text-black"><Link to="/movies">MOVIES</Link></li>
+                                <li className="text-black"><Link to="/new&last">NEW&LAST CHANCE</Link></li>
+                                <li className="text-black"><Link to="/schedule">SCHEDULE</Link></li>
+                                <li className="text-black"><Link to="/comingsoon">FREE EPISODES</Link></li>
+                                <li className="text-black"><Drop /></li>
+                            </ul>
                         </div >
                         <div className='my-auto'>
                             {isAuth() ? <Profilebutton /> : <Button />}

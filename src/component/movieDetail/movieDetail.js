@@ -92,7 +92,7 @@ const MovieDetails = () => {
                 });
 
 
-                console.log('Comment posted successfully:', response.data);
+                console.log('Comment posted successfully:');
 
                 // Update the commentsList state with the new comment
                 setCommentsList([...commentsList, { user, comment }]);
