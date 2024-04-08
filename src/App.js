@@ -18,7 +18,7 @@ import Coming from './component/comingSoon/coming';
 import Series from "./component/comingSoon/series";
 import NewAndLast from "./component/comingSoon/new&last";
 import SchedulePage from "./component/comingSoon/schedul";
-import { SpeedInsights } from "@vercel/speed-insights/react"
+
 const App = () => {
   const [user, setUser] = useState(null);
 
@@ -49,12 +49,12 @@ const App = () => {
         <Route path="/update/user/:id" element={<UserDetails />} />
         <Route path="/movie/detail/kino/:id" element={<KinoView />} />
         <Route path="*" element={<BadRequest />} />
-        <Route path='/400' element={<BadRequest400 />} />
-        <Route path='/comingsoon' element={<Coming />} />
-        <Route path='/movies' element={<Movies />} />
-        <Route path='/series' element={<Series />} />
-        <Route path='/new&last' element={<NewAndLast />} />
-        <Route path='/schedule' element={<SchedulePage />} />
+        <Route path="/400" element={<BadRequest400 />} />
+        <Route path="/comingsoon" element={<Coming />} />
+        <Route path="/movies" element={<Movies />} />
+        <Route path="/series" element={<Series />} />
+        <Route path="/new&last" element={<NewAndLast />} />
+        <Route path="/schedule" element={<SchedulePage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
