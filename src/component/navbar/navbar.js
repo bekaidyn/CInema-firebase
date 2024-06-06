@@ -7,7 +7,7 @@ import Mobile from './mobileNavbar';
 import Drop from './dropdown';
 
 
-const Navbar = () => {
+const Navbar = ({ handleLogout, isLoggedIn }) => {
 
     const location = useLocation();
     const currentRoute = location.pathname;
@@ -46,6 +46,18 @@ const Navbar = () => {
                                 <li className="text-black"><Drop /></li>
                             </ul>
                         </div >
+                        {isLoggedIn ? (
+                            <button onClick={handleLogout} className="my-auto text-black">
+                                Logout
+                            </button>
+                        ) : (
+                            <Link to="/login" className="my-auto text-black">
+                                Login
+                            </Link>
+                        )}
+                        {/* <div className='my-auto'>
+                            <Button />
+                        </div> */}
                     </nav >
                 </div>
                 <div className={`lg1:hidden sm:w-full bg-white `}>
