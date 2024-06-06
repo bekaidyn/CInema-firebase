@@ -28,7 +28,7 @@ function LoginAdmin({ onLogin }) {
 
             const body = JSON.stringify(user);
 
-            const res = await axios.post('http://localhost:3001/api/auth/login', body, config);
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, body, config);
             const token = res.data
             localStorage.setItem('token', token);
             onLogin(token)
