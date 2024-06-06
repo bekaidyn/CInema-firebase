@@ -1,7 +1,41 @@
 import React, { useState } from 'react';
 import Spinner from '../spinner/spinner';
-function LoginAdmin() {
+import axios from 'axios'
+function LoginAdmin({ onLogin }) {
     const [loading, setLoading] = useState(true);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    const { email, password } = formData;
+
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        const user = {
+            email,
+            password
+        };
+
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            const body = JSON.stringify(user);
+
+            const res = await axios.post('http://localhost:3001/api/auth/login', body, config);
+            const token = res.data
+            localStorage.setItem('token', token);
+            onLogin(token)
+        } catch (err) {
+            console.error(err.response.data);
+        }
+    };
 
     setTimeout(() => {
         setLoading(false);
@@ -12,6 +46,7 @@ function LoginAdmin() {
             `${process.env.REACT_APP_API_URL}/auth/google/callback`,
             '_self'
         );
+
     };
 
     return (
@@ -23,14 +58,20 @@ function LoginAdmin() {
                     <div className='flex flex-col py-[8%] sm:px-[10%] lg1:px-[5%] bg-white'>
                         <h1 className='text-5xl my-5 text-center '>Signin</h1>
                         <input
-                            type='text'
+                            name="email"
+                            type="text"
+                            value={email}
+                            onChange={onChange} required
                             className='py-2 my-1 bg-gray-200 rounded-md border-2 pl-3 sm:w-full lg1:w-[100%] lg:w-250'
                             placeholder='Username' />
                         <input
-                            type='password'
+                            name="password"
+                            type="password"
+                            value={password}
+                            onChange={onChange} required
                             className='py-2 bg-gray-200 my-1 rounded-md border-2 pl-3 sm:w-full lg1:w-[100%] lg:w-250'
                             placeholder='Password' />
-                        <button className='bg-[#0a9d71] text-white my-3 lg:w-250 sm:w-auto py-2 text-center rounded-md'>Signin</button>
+                        <button onClick={onSubmit} className='bg-[#0a9d71] text-white my-3 lg:w-250 sm:w-auto py-2 text-center rounded-md'>Signin</button>
                         <div className='pt-2 text-center'>
                             <p>or sign in with </p>
                         </div>

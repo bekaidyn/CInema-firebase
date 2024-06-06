@@ -1,17 +1,15 @@
 // Dashboard.js
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { MonitorPlay, Settings, HelpCircle, FileVideo, MessageCircle, UserRoundCog, User, MoveRight, MoveLeft, CircleUserRound, AreaChart, Clapperboard, BellRing, Home, FileVideo2 } from 'lucide-react'
 import Form from '../controller/movieControl/createMovie';
 import MovieController from '../controller/movieControl/controller';
 import UserManagement from '../controller/userControl/userControl';
 import Chart from '../Chart/Chart';
 import Spinner from '../spinner/spinner';
-import axios from 'axios';
 import CommentDashboard from '../controller/commentControl/comment';
 import VideoForm from '../controller/movieControl/createMovieVideo';
 
-const Dashboard = (userDetails) => {
-    const [userData, setUserData] = useState([]);
+const Dashboard = ({ handleLogout, isLoggedIn }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isControl, setIsControl] = useState(false);
@@ -115,19 +113,10 @@ const Dashboard = (userDetails) => {
     };
 
     // get user data
-    useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user`)
-            .then((res) => {
-                setUserData(res.data.data.map(item => ({ role: item.role, email: item.email })))
-                setLoading(false);
-            }).catch((err) => { console.log(err) })
-    }, [])
 
-    const user = userDetails.user;
-    //Check
-    const shouldHideUserManagement = Array.isArray(userData) && userData.length > 0 &&
-        userData.some(item => (item.role === 'User' || item.role === 'Operator') && item.email === user.email);
 
+
+    //Che
     //Logout
     const logout = () => {
         window.open(`${process.env.REACT_APP_API_URL}/auth/logout`, '_self');
@@ -145,7 +134,6 @@ const Dashboard = (userDetails) => {
                                 <h1 className="text-2xl font-bold mb-4 flex sm:mt-5 lg:mt-0 "> <Clapperboard className='my-auto mr-3' size={30} />Dashboard</h1>
                                 <div>
                                     <h2 className="text-lg font-semibold mb-2 "> Admin</h2>
-                                    <p>{user.role}</p>
                                     <ul>
                                         <li className='py-2'>
                                             <a href='/profile' className='flex w-full py-1 px-1  text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300'>
@@ -154,11 +142,11 @@ const Dashboard = (userDetails) => {
                                         </li>
 
                                         <li className="lg:text-white py-0 sm1:text-white no-underline" >
-                                            {!shouldHideUserManagement && (
-                                                <div className='flex w-full py-1 px-1  text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300' onClick={openAdmin}>
-                                                    <UserRoundCog className='mr-2' /> User Management
-                                                </div>
-                                            )}
+
+                                            <div className='flex w-full py-1 px-1  text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300' onClick={openAdmin}>
+                                                <UserRoundCog className='mr-2' /> User Management
+                                            </div>
+
                                         </li>
 
 
@@ -246,15 +234,15 @@ const Dashboard = (userDetails) => {
 
                                                 <button className='w-full py-2 px-4 mb-2 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300'>About</button>
 
-                                                {!shouldHideUserManagement && (
 
-                                                    <button className='w-full py-2 px-4 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300 relative' onClick={openAdmin}>
-                                                        Management
-                                                    </button>
 
-                                                )}
+                                                <button className='w-full py-2 px-4 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300 relative' onClick={openAdmin}>
+                                                    Management
+                                                </button>
 
-                                                <button className='w-full py-2 px-4 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300' onClick={logout}>
+
+
+                                                <button className='w-full py-2 px-4 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300' onClick={handleLogout}>
                                                     Logout
                                                 </button>
                                             </div>

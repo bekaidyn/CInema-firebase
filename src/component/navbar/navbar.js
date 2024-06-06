@@ -1,33 +1,16 @@
-// Import the necessary dependencies
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Logo from '../images/movies1.png';
-import Button from '../button/button';
+// import Button from '../button/button';
 import Mobile from './mobileNavbar';
-import Profilebutton from '../button/profileButton';
-import axios from 'axios';
 import Drop from './dropdown';
 
 
-const Navbar = (userDetails) => {
-    const [auth, setAuth] = useState([]);
+const Navbar = () => {
+
     const location = useLocation();
     const currentRoute = location.pathname;
-    useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user`).then((res) => {
-            setAuth(res.data.data.filter(item => item.email).map(item => item.email))
-        })
-            .catch((err) => { console.log(err) })
-    }, [])
-
-
-
-
-    const isAuth = () => {
-        return userDetails && userDetails.user && auth && auth.includes(userDetails.user.email);
-    };
-
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -63,9 +46,6 @@ const Navbar = (userDetails) => {
                                 <li className="text-black"><Drop /></li>
                             </ul>
                         </div >
-                        <div className='my-auto'>
-                            {isAuth() ? <Profilebutton /> : <Button />}
-                        </div>
                     </nav >
                 </div>
                 <div className={`lg1:hidden sm:w-full bg-white `}>
@@ -79,9 +59,9 @@ const Navbar = (userDetails) => {
                         <a className=' mx-0 p-0 ' href='/'>
                             <img className='h-11' src={Logo} alt='Logo' />
                         </a>
-                        <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-0 sm:mr-5 sm:ml-auto'>
-                            {isAuth() ? <Profilebutton /> : <Button />}
-                        </div>
+                        {/* <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-0 sm:mr-5 sm:ml-auto'>
+                            <Button />
+                        </div> */}
                     </div>
                     {isOpen && (
                         <div>

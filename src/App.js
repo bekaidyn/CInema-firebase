@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './component/navbar/navbar';
 import Dashboard from './component/Admin/dashboart';
 import LoginAdmin from './component/login/login';
@@ -18,35 +17,46 @@ import Coming from './component/comingSoon/coming';
 import Series from "./component/comingSoon/series";
 import NewAndLast from "./component/comingSoon/new&last";
 import SchedulePage from "./component/comingSoon/schedul";
+// import Login2 from './component/components/Logins'
+import Register from './component/components/Register'
+import Homes from './component/components/Homes'
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  const getUser = async () => {
-    try {
-      const url = `${process.env.REACT_APP_API_URL}/auth/login/success`;
-      const { data } = await axios.get(url, { withCredentials: true });
-      setUser(data.user._json);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    getUser();
+    // Check localStorage for the login state on component mount
+    const savedLoginState = localStorage.getItem('isLoggedIn');
+    if (savedLoginState === 'true') {
+      setIsLoggedIn(true);
+    }
   }, []);
-  return (
-    <BrowserRouter>
-      <Navbar user={user} />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="/movie/detail/:id" element={<MovieDetails />} />
-        <Route path="/login" element={user ? <Navigate to="/create/movie" /> : <LoginAdmin />} />
 
-        <Route path="/create/movie" element={user ? <Dashboard user={user} /> : <Navigate to="/create/movie" />} />
-        <Route path="/profile" element={user ? <ProfilePage user={user} /> : <Navigate to="/profile" />} />
-        <Route path="/update/movie/:id" element={user ? <MovieUpdate user={user} /> : <Navigate to="/login" />} />
-        <Route path="/update/user/:id" element={<UserDetails />} />
+  const handleLogin = (token) => {
+    console.log('Login token:', token);
+    setIsLoggedIn(true);
+    localStorage.setItem('isLoggedIn', 'true'); // Save login state to localStorage
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('isLoggedIn'); // Remove login state from localStorage
+  };
+
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        {/* <Route path="/" element={isLoggedIn ? <Navigate to="/home" /> : <Login2 onLogin={handleLogin} />} /> */}
+        <Route path="/register" element={<Register />} />
+        <Route index element={<Home />} />
+        <Route path="/home" element={isLoggedIn ? <Homes /> : <Navigate to="/" />} />
+        <Route path="/movie/detail/:id" element={<MovieDetails />} />
+        <Route path="/login" element={isLoggedIn ? <Navigate to="/create/movie" /> : <LoginAdmin onLogin={handleLogin} />} />
+        <Route path="/create/movie" element={isLoggedIn ? <Dashboard onLogin={handleLogin} handleLogout={handleLogout} isLoggedIn={isLoggedIn} /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="/update/movie/:id" element={isLoggedIn ? <MovieUpdate /> : <Navigate to="/login" />} />
+        <Route path="/update/user/:id" element={isLoggedIn ? <UserDetails /> : <Navigate to="/login" />} />
         <Route path="/movie/detail/kino/:id" element={<KinoView />} />
         <Route path="*" element={<BadRequest />} />
         <Route path="/400" element={<BadRequest400 />} />
@@ -57,7 +67,7 @@ const App = () => {
         <Route path="/schedule" element={<SchedulePage />} />
       </Routes>
       <Footer />
-    </BrowserRouter>
+    </Router>
   );
 }
 
