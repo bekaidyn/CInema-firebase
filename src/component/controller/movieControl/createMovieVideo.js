@@ -13,6 +13,7 @@ const VideoForm = () => {
     const [kinoFiles, setKinoFiles] = useState([]);
     const [kinoList, setKinoList] = useState([]);
     const [kinoUrls, setKinoUrls] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/api/v1/movies`)
@@ -56,11 +57,16 @@ const VideoForm = () => {
             formData.append('categoryId', selectedCategoryObject._id);
             formData.append('categoryName', selectedCategoryObject.title);
 
-            // Make a POST request to your server endpoint
+            // Make a POST request to your server endpoint with progress tracking
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/movies/videos`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
+                onUploadProgress: progressEvent => {
+                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    console.log(`Upload Progress: ${progress}%`);
+                    setUploadProgress(progress);
+                }
             });
 
             console.log('Response:', response.data);
@@ -74,6 +80,7 @@ const VideoForm = () => {
             // Handle error or show an error message
         }
     };
+
 
     //kino upload video remove
     const handleRemoveVideo = (index, type) => {
@@ -243,7 +250,9 @@ const VideoForm = () => {
                         </div>
                     </div>
                 </div>
-
+                {uploadProgress > 0 && (
+                    <div>Upload Progress: {uploadProgress}%</div>
+                )}
                 <button
                     className="w-full mt-5 bg-indigo-500 text-white p-2 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring focus:border-indigo-300" onClick={handleUpload}>
                     Upload
