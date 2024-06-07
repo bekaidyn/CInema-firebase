@@ -291,7 +291,7 @@ const MovieDetails = () => {
                         </div>
                     </div>
                     {/*Comment section */}
-                    <div className="my-5 container">
+                    <div className="my-5 lg:container">
                         <div className='flex sm:flex-col lg:flex-row'>
                             <div className=''>
                                 <h2 className="text-2xl font-bold mb-2">Comment Section</h2>
