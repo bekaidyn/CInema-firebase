@@ -23,7 +23,7 @@ const MovieDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [rating, setRating] = useState(0);
-
+    const [totalRating, setTotalRating] = useState(0);
     const handleStarClick = (starIndex) => {
         // Set the rating when a star is clicked
         setRating(starIndex + 1);
@@ -54,19 +54,28 @@ const MovieDetails = () => {
             })
             .catch((err) => console.log(err));
     }, []);
-    console.log(kinoData)
-    //get current movie datas comment
+
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/api/v1/movie/comment?movieId=${id}`)
             .then((res) => {
                 setComments(res.data);
+                calculateTotalRating(res.data);
             })
             .catch((err) => {
                 console.error(err);
             });
     }, [id]);
 
-
+    const calculateTotalRating = (comments) => {
+        if (comments.length === 0) {
+            setTotalRating(0);
+            return;
+        }
+        const total = comments.reduce((acc, curr) => acc + curr.rating, 0);
+        console.log(total)
+        const average = total / comments.length;
+        setTotalRating(average);
+    };
     //commet
     const handleCommentChange = (e) => {
         setComment(e.target.value);
@@ -80,30 +89,38 @@ const MovieDetails = () => {
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };
-
     const handleAddComment = async () => {
         if (comment.trim() !== '' && user.trim() !== '' && email.trim() !== '') {
+            if (rating === 0) {
+                alert('Please rate the movie before adding a comment.');
+                return;
+            }
             try {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/movie/comment`, {
                     movieId: id, // Include the movieId parameter
                     user: user,
                     email: email,
                     comment: comment,
+                    rating: rating,
                 });
-
 
                 console.log('Comment posted successfully:', response.data);
 
                 // Update the commentsList state with the new comment
-                setCommentsList([...commentsList, { user, comment }]);
+                setCommentsList([...commentsList, { user, comment, rating }]);
                 setUser('');
                 setEmail('');
                 setComment('');
+                setRating(0);
+                calculateTotalRating([...comments, { rating }]);
             } catch (error) {
                 console.error('Error posting comment:', error.response ? error.response.data : error.message);
             }
+        } else {
+            alert('Please fill in all fields before adding a comment.');
         }
     };
+
 
     // views function
     const handleWatchVideo = async (kinoId) => {
@@ -135,7 +152,7 @@ const MovieDetails = () => {
     const handleButtonClick = () => {
         navigate('/');
     };
-
+    console.log(totalRating)
     return (
         <div className="w-full h-full bg-gradient-to-r from-indigo-500 via-sky-500 to-blue-800">
             {loading ? (
@@ -148,12 +165,12 @@ const MovieDetails = () => {
                             <MoveLeft />
                         </button>
                         {/*Movie details*/}
-                        <div className="flex lg:flex-row sm:flex-col">
-                            <div className="lg:w-[50%] h-[400px] my-5 mx-left">
+                        <div className="flex justify-start lg:flex-row sm:flex-col">
+                            <div className="lg:w-[50%] min-h-[400px] mx-left">
                                 <Slider {...settings}>
                                     {background.map((image, index) => (
                                         <div key={index}>
-                                            <img src={`${process.env.REACT_APP_API_URL}/${image}`} alt={`Slide ${index + 1}`} className="w-full h-[400px] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 rounded-lg" />
+                                            <img src={`${process.env.REACT_APP_API_URL}/${image}`} alt={`Slide ${index + 1}`} className="w-full h-auto transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 rounded-lg" />
                                         </div>
                                     ))}
                                 </Slider>
@@ -207,30 +224,38 @@ const MovieDetails = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex my-5 flex-col lg:flex-row'>
+                    <div className='flex justify-between my-5 flex-col md:flex-row lg:flex-row'>
                         {/*Trailer  */}
-                        <div className='mx-[10%]'>
+                        <div>
                             {kinoData.map((kino) => (
                                 <div key={kino._id} className=' my-[2%]' >
                                     <div
                                         className={` ${kino.categoryId === movie._id ? '' : 'hidden'}`}
                                     >
                                         <h1 className='text-2xl mx-auto text-gray-300 font-bold mb-4'>Trailer {kino.categoryName}</h1>
-                                        <div className='w-[640px] h-[360px]'>
+                                        <div className=''>
                                             <ReactPlayer
                                                 url={`${process.env.REACT_APP_API_URL}/${kino.trailer}`}
                                                 controls
                                                 playbackRate={1}
+                                                config={{
+                                                    file: {
+                                                        attributes: {
+                                                            controlsList: 'nodownload'
+                                                        }
+                                                    }
+                                                }}
+                                                width='100%'
+                                                height='100%'
                                                 volume={1}
                                             />
                                         </div>
                                     </div>
                                 </div>
                             ))}
-
                         </div>
-                        <div >
-                            <div className="mt-10 flex justify-center ">
+                        <div className="lg:mr-[10%] justify-center  my-auto" >
+                            <div className="mt-10  flex justify-center ">
                                 {kinoData.map((kino) => (
                                     <div key={kino._id}>
                                         <Link to={`/movie/detail/kino/${kino._id}`}>
@@ -247,7 +272,7 @@ const MovieDetails = () => {
                                 ))}
                             </div>
                             <div className='flex mt-[20%] '>
-                                {[1, 2, 3, 4, 5].map((starIndex) => (
+                                {[0, 1, 2, 3, 4, 5,].map((starIndex) => (
                                     <Star
                                         key={starIndex}
                                         onClick={() => handleStarClick(starIndex)}
@@ -258,6 +283,11 @@ const MovieDetails = () => {
                                 ))}
                                 <p>Your rating: {rating}</p>
                             </div>
+                            <div className='flex'>
+                                <p className='text-4xl my-10 mr-5'>Total Rating: {totalRating}</p>
+                                <Star className='my-auto' size={40} />
+                            </div>
+
                         </div>
                     </div>
                     {/*Comment section */}
