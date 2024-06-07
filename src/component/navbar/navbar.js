@@ -71,9 +71,18 @@ const Navbar = ({ handleLogout, isLoggedIn }) => {
                         <a className=' mx-0 p-0 ' href='/'>
                             <img className='h-11' src={Logo} alt='Logo' />
                         </a>
-                        {/* <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-0 sm:mr-5 sm:ml-auto'>
-                            <Button />
-                        </div> */}
+                        <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-auto my-auto sm:mr-5 sm:ml-auto'>
+                            {isLoggedIn ? (
+                                <button onClick={handleLogout} className="my-auto text-black">
+                                    Logout
+                                </button>
+                            ) : (
+                                <Link to="/login" className="my-auto text-black">
+                                    Login
+                                </Link>
+                            )}
+                        </div>
+
                     </div>
                     {isOpen && (
                         <div>
