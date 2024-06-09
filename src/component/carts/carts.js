@@ -57,7 +57,7 @@ const MovieCards = () => {
                 <div className='text-center'>
                     <h1 className='text-center m-8 text-5xl'>KAZ top 10 Movies</h1>
                 </div>
-                <div className='  box-border  border-2 w-auto divide-y divide-gray-200'>
+                <div className=' rounded-md box-border  border-2 w-auto divide-y divide-gray-200'>
                     <div className='mr-10 flex my-2'>
                         <button className="button mx-2 border-2 p-1 bg-gray-300" onClick={handleSort}>
                             Sort {sortOrder === 'asc' ? '↑' : '↓'}
@@ -77,15 +77,15 @@ const MovieCards = () => {
                             </li>
                         ))}
                     </ul>
+                    <div className='border-2'>
+                        <Pagination
+                            itemsPerPage={itemsPerPage}
+                            totalItems={filteredData.length}
+                            paginate={paginate}
+                            currentPage={currentPage}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='border-2'>
-                <Pagination
-                    itemsPerPage={itemsPerPage}
-                    totalItems={filteredData.length}
-                    paginate={paginate}
-                    currentPage={currentPage}
-                />
             </div>
         </div>
     );

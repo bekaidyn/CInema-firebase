@@ -6,7 +6,7 @@ const Footer = () => {
     const currentRoute = location.pathname;
     return (
 
-        <footer className="bg-white  mx-[6%] " style={{ display: ['/login', '/create/movie', '/profile'].includes(currentRoute) ? 'none' : 'block' }}>
+        <footer className="bg-white  " style={{ display: ['/login', '/create/movie', '/profile'].includes(currentRoute) ? 'none' : 'block' }}>
             <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
                 <div className="mt-8 flex justify-center space-x-6">
                     <a href="/" className="text-gray-400 hover:text-gray-500">

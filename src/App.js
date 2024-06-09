@@ -17,9 +17,8 @@ import Coming from './component/comingSoon/coming';
 import Series from "./component/comingSoon/series";
 import NewAndLast from "./component/comingSoon/new&last";
 import SchedulePage from "./component/comingSoon/schedul";
-// import Login2 from './component/components/Logins'
 import Register from './component/components/Register'
-import Homes from './component/components/Homes'
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,12 +44,12 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <Routes>
         {/* <Route path="/" element={isLoggedIn ? <Navigate to="/home" /> : <Login2 onLogin={handleLogin} />} /> */}
         <Route path="/register" element={<Register />} />
         <Route index element={<Home />} />
-        <Route path="/home" element={isLoggedIn ? <Homes /> : <Navigate to="/" />} />
+        {/* <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />} /> */}
         <Route path="/movie/detail/:id" element={<MovieDetails />} />
         <Route path="/login" element={isLoggedIn ? <Navigate to="/create/movie" /> : <LoginAdmin onLogin={handleLogin} />} />
         <Route path="/create/movie" element={isLoggedIn ? <Dashboard onLogin={handleLogin} handleLogout={handleLogout} isLoggedIn={isLoggedIn} /> : <Navigate to="/login" />} />

@@ -15,7 +15,7 @@ const Navbar = ({ handleLogout, isLoggedIn }) => {
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
-
+    console.log(isLoggedIn)
     return (
         <header
             className={`z-10 bg-white w-[100%] p-0 m-0 top-0  sticky  border `}
@@ -31,7 +31,7 @@ const Navbar = ({ handleLogout, isLoggedIn }) => {
             <div>
                 <div className='hidden lg1:block m-0 '>
                     <nav className={`container flex `}>
-                        <div className='flex-none my-2 p-0'>
+                        <div className='flex-none my-auto p-0'>
                             <a href='/'>
                                 <img className='h-10' src={Logo} alt='Logo' />
                             </a>
@@ -71,18 +71,18 @@ const Navbar = ({ handleLogout, isLoggedIn }) => {
                         <a className=' mx-0 p-0 ' href='/'>
                             <img className='h-11' src={Logo} alt='Logo' />
                         </a>
-                        <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-auto my-auto sm:mr-5 sm:ml-auto'>
-                            {isLoggedIn ? (
-                                <button onClick={handleLogout} className="my-auto text-black">
-                                    Logout
-                                </button>
-                            ) : (
-                                <Link to="/login" className="my-auto text-black">
-                                    Login
-                                </Link>
-                            )}
-                        </div>
-
+                        {/* <div className='md:ml-auto md1:ml-auto md:mr-2 md:my-0 sm:mr-5 sm:ml-auto'>
+                            <Button />
+                        </div> */}
+                        {isLoggedIn ? (
+                            <button onClick={handleLogout} className="my-auto text-black">
+                                Logout
+                            </button>
+                        ) : (
+                            <Link to="/login" className="my-auto text-black">
+                                Login
+                            </Link>
+                        )}
                     </div>
                     {isOpen && (
                         <div>

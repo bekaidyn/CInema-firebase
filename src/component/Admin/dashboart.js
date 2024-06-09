@@ -1,5 +1,5 @@
-// Dashboard.js
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { MonitorPlay, Settings, HelpCircle, FileVideo, MessageCircle, UserRoundCog, User, MoveRight, MoveLeft, CircleUserRound, AreaChart, Clapperboard, BellRing, Home, FileVideo2 } from 'lucide-react'
 import Form from '../controller/movieControl/createMovie';
 import MovieController from '../controller/movieControl/controller';
@@ -8,8 +8,10 @@ import Chart from '../Chart/Chart';
 import Spinner from '../spinner/spinner';
 import CommentDashboard from '../controller/commentControl/comment';
 import VideoForm from '../controller/movieControl/createMovieVideo';
+import SettingsPage from './settings';
 
 const Dashboard = ({ handleLogout, isLoggedIn }) => {
+    const [controlComment, setControlComment] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isControl, setIsControl] = useState(false);
@@ -19,14 +21,32 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
     const [comment, setComment] = useState(false);
     const [loading, setLoading] = useState(true);
     const [movieAdd, setMovieAdd] = useState(false);
+    const [newComments, setNewComments] = useState(0); // State for new comments
+    const [commentsOpen, setCommentsOpen] = useState(false); // State for tracking comments section visibility
+    const [settingsOpen, setSettingsOpen] = useState(false); // State for tracking settings form visibility
+
+    //spinner
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/movie/comment`)
+            .then((res) => {
+                setControlComment(res.data);
+                // Calculate the number of unread comments when comments are loaded
+                const newUnread = res.data.filter(comment => comment.isNew).length;
+                setNewComments(newUnread);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setLoading(false);
+                console.error(err);
+            });
+    }, []);
+
     //spinner
     setTimeout(() => {
         setLoading(false);
     }, 200);
     //Menu
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-    };
+
     //Sitebar
     const toggleSlite = () => {
         setSiteBar(!saitBar);
@@ -34,6 +54,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
     //Form
     const openForm = () => {
         setIsFormOpen(true);
+        setSettingsOpen(false);
         setIsControl(false); // Close Movie Controller when opening Movie Create form
         setAnalise(false);
         setComment(false);
@@ -51,6 +72,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
         setIsControl(false); // Close Movie Controller when opening Movie Create form
         setAnalise(false);
         setComment(false);
+        setSettingsOpen(false);
         setAdmin(false);
     };
 
@@ -61,6 +83,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
     const openComment = () => {
         setComment(true);
         setMovieAdd(false);
+        setSettingsOpen(false);
         setIsFormOpen(false);
         setIsControl(false); // Close Movie Controller when opening Movie Create form
         setAnalise(false);
@@ -77,6 +100,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
         setIsFormOpen(false);
         setMovieAdd(false);
         setComment(false);
+        setSettingsOpen(false);
         setIsControl(false); // Close Movie Controller when opening Movie Create form
         setAnalise(false);
     };
@@ -89,6 +113,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
         setIsControl(true);
         setMovieAdd(false);
         setAdmin(false);
+        setSettingsOpen(false);
         setComment(false);
         setIsFormOpen(false);
         setAnalise(false);
@@ -103,6 +128,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
         setAnalise(true)
         setAdmin(false);
         setMovieAdd(false);
+        setSettingsOpen(false);
         setComment(false);
         setIsControl(false);
         setIsFormOpen(false); // Close Movie Create form when opening Movie Controller
@@ -113,14 +139,44 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
     };
 
     // get user data
+    const openSettings = () => {
+        setSettingsOpen(true);
+        setAnalise(false)
+        setAdmin(false);
+        setMovieAdd(false);
+        setComment(false);
+        setIsControl(false);
+        setIsFormOpen(false);
+    };
 
+    // Function to close settings form
+    const closeSettings = () => {
+        setSettingsOpen(false);
+    };
 
 
     //Che
     //Logout
-    const logout = () => {
-        window.open(`${process.env.REACT_APP_API_URL}/auth/logout`, '_self');
+    // const logout = () => {
+    //     window.open(`${process.env.REACT_APP_API_URL}/auth/logout`, '_self');
+    // };
+    const toggleMenu = () => {
+        setIsOpen(!isOpen); // Toggle the menu visibility
+        setCommentsOpen(false); // Close the comments section when the menu is opened
     };
+
+    const toggleComments = () => {
+        setIsOpen(false); // Close the menu when the comments section is opened
+        setCommentsOpen(!commentsOpen); // Toggle the comments section visibility
+    };
+
+    function truncateText(text, maxLength) {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        } else {
+            return text;
+        }
+    }
     return (
         <div>
             {loading ? (
@@ -151,7 +207,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
 
 
                                         <li className='py-2'>
-                                            <div className='flex w-full py-1 px-1  text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300'>
+                                            <div onClick={openSettings} className='flex w-full py-1 px-1  text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:border-blue-300'>
                                                 <Settings className='mr-2' />     Settings
                                             </div>
                                         </li>
@@ -221,9 +277,30 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
                                             <Home className='mr-4' />
                                         </a>
                                     </li>
-                                    <li className="lg:text-white py-1 sm1:text-white no-underline" >
-                                        <BellRing className='mr-4' />
+                                    <li className="lg:text-white py-1 sm1:text-white no-underline relative flex">
+                                        <BellRing className='mr-4' onClick={toggleComments} />
+                                        {newComments > 0 && <span className="bg-red-500 text-xs text-white rounded-full px-2 py-1 mr-2">{newComments}</span>}
+                                        {/* Add an indicator to show/hide the comments */}
+
                                     </li>
+                                    {commentsOpen && (
+                                        <div className="absolute mt-[4%] right-[10%] max-h-[200px] overflow-y-scroll py-2 px-4 rounded-lg bg-blue-400 shadow-lg">
+                                            <div className="mx-0">
+                                                {/* Render truncated comments */}
+                                                {controlComment.map((com, index) => (
+                                                    com.isNew && (
+                                                        <div key={index} className="my-2">
+                                                            <div className="bg-gray-100 rounded-md p-3 cursor-pointer" onClick={openComment}>
+                                                                <p className="text-black font-semibold">{com.user}</p>
+                                                                <p className="text-black">{truncateText(com.comment, 20)}</p>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <li className="lg:text-white py-1 sm1:text-white no-underline" onClick={toggleMenu}>
                                         <CircleUserRound />
                                     </li>
@@ -261,6 +338,7 @@ const Dashboard = ({ handleLogout, isLoggedIn }) => {
                                 {isControl && <MovieController onCloseControl={closeControl} />}
                                 {analise && <Chart onCloseAnalise={closeAnalis} />}
                                 {comment && <CommentDashboard onCloseComment={closeComment} />}
+                                {settingsOpen && <SettingsPage onCloseSettings={closeSettings} />}
                             </h2>
                             {/* Your other widgets */}
                         </div>
