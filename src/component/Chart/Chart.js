@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { defaults } from "chart.js/auto";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
+import React, {useState} from "react";
+import {defaults} from "chart.js/auto";
+import {Bar, Doughnut, Line} from "react-chartjs-2";
 import revenueData from "./revenueData.json";
 import sourceData from "./sourceData.json";
 import Spinner from "../spinner/spinner";
@@ -21,7 +21,7 @@ const Chart = () => {
     return (
         <div className="App">
             {loading ? (
-                <Spinner />
+                <Spinner/>
             ) : (
                 <>
                     <div className="dataCard revenueCard">
